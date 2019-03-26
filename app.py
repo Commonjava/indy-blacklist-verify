@@ -63,7 +63,7 @@ with open(infile) as f:
                 result = f"ERROR {resp.status_code}"
             else:
                 realsum = sha1()
-                for chunk in r.iter_content(chunk_size=8192): 
+                for chunk in resp.iter_content(chunk_size=16384): 
                     if chunk: # filter out keep-alive new chunks
                         realsum.update(chunk)
 
