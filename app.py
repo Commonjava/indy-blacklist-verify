@@ -64,7 +64,7 @@ with open(infile) as f:
 		if resp.status_code != 200:
 			result = f"ERROR {resp.status_code}"
 		else:
-			realsum = sha1(BytesIO(response.content)).hexdigest()
+			realsum = sha1(BytesIO(resp.content)).hexdigest()
 			if realsum == badsum:
 				result = "FAIL"
 			else:
