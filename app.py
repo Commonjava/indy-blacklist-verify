@@ -3,7 +3,6 @@
 import requests
 import os
 import time
-from io import BytesIO
 from hashlib import sha1
 from ruamel.yaml import YAML
 
@@ -59,16 +58,20 @@ with open(infile) as f:
 			continue
 
 		print(f"Checking: {path}")
-		resp = requests.get(f"{url}/api/content/{repo}/{path}")
-
-		if resp.status_code != 200:
-			result = f"ERROR {resp.status_code}"
-		else:
-			realsum = sha1(BytesIO(resp.content)).hexdigest()
-			if realsum == badsum:
-				result = "FAIL"
+		with requests.get(f"{url}/api/content/{repo}/{path}", stream=True) as resp:
+			if resp.status_code != 200:
+				result = f"ERROR {resp.status_code}"
 			else:
-				result = "OK"
+				realsum = sha1()
+				for chunk in r.iter_content(chunk_size=8192): 
+                if chunk: # filter out keep-alive new chunks
+                    realsum.update(chunk)
+
+				realsum = realsum.hexdigest()
+				if realsum == badsum:
+					result = "FAIL"
+				else:
+					result = "OK"
 
 		processed.append(path)
 		with open(outfile, 'a') as f:
