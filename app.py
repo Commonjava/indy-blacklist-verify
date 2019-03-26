@@ -22,7 +22,7 @@ for filename in os.listdir(CONFIG_DIR):
 		continue
 
 	print(f"Reading configmap file: {filename}")
-	with open(os.path.join(config_dir, filename)) as f:
+	with open(os.path.join(CONFIG_DIR, filename)) as f:
 		v = f.read()
 		config[filename] = v
 
